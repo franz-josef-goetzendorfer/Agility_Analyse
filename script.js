@@ -185,11 +185,30 @@ function jumpTo(time) {
 }
 
 // --- Video Features ---
+
+// NEW: Function to trigger the hidden file input
+function updateVideo() {
+    if (!currentRunId) return alert("Bitte zuerst einen Lauf laden.");
+    document.getElementById('updateVideoInput').click();
+}
+
+// NEW: Function to handle the file selection and update the video
+function handleVideoUpdate(event) {
+    const file = event.target.files[0];
+    if (file && currentRunId) {
+        videoFileCache[currentRunId] = file;
+        const video = document.getElementById('mainVideo');
+        video.src = URL.createObjectURL(file);
+        video.play();
+    }
+    event.target.value = ''; // Reset input to allow re-selecting the same file
+}
+
 function updateTimelineMarkers() {
     const run = allRuns.find(r => r.id === currentRunId);
     const video = document.getElementById('mainVideo');
     const markersDiv = document.getElementById('timelineMarkers');
-    if (!run || !video || video.duration === Infinity) {
+    if (!run || !video || !video.duration || video.duration === Infinity) {
         markersDiv.innerHTML = '';
         return;
     }
