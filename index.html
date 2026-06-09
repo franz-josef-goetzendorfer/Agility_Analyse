@@ -87,11 +87,13 @@
                 <div id="notesList"></div>
             </div>
             
-            <div style="margin-top: 20px; display: flex; gap: 10px;">
+            <div style="margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px;">
                  <button class="secondary" onclick="toggleDrawing()">Zeichnen an/aus</button>
                  <button class="secondary" onclick="clearDrawing()">Zeichnung löschen</button>
+                 <button class="secondary" onclick="updateVideo()">Video ändern</button> <!-- NEW BUTTON -->
                  <button class="danger" onclick="deleteCurrentRun()">Diesen Lauf löschen</button>
             </div>
+            <input type="file" id="updateVideoInput" class="hidden" accept="video/*" onchange="handleVideoUpdate(event)"> <!-- NEW HIDDEN INPUT -->
         </div>
     </div>
 
