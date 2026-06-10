@@ -4,36 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hundesport Analyse Pro v2</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+    <div class="background-glow"></div>
 
     <!-- SIDEBAR -->
     <div class="sidebar">
         <div class="sidebar-header">
             <h3>Hundesport Analyse Pro</h3>
         </div>
-        <div class="sidebar-actions">
+        <div class="sidebar-actions glass-card">
             <button onclick="showNewRunForm()">+ Neuer Lauf</button>
             <button class="secondary" onclick="document.getElementById('importFile').click()">Import</button>
             <button class="secondary" onclick="exportData()">Export</button>
             <input type="file" id="importFile" class="hidden" accept=".json" onchange="importData(event)">
         </div>
         
-        <div class="filters">
+        <div class="filters glass-card">
             <label>Filter Datum:</label>
             <select id="filterDate" onchange="renderHistory()"></select>
             <label>Filter Event:</label>
             <select id="filterEvent" onchange="renderHistory()"></select>
         </div>
 
-        <div id="analysisList" class="analysis-list"></div>
+        <div id="analysisList" class="analysis-list glass-card"></div>
     </div>
 
     <!-- MAIN AREA -->
     <div class="main-content">
         
-        <div id="newRunForm" class="card hidden">
+        <div id="newRunForm" class="glass-card hidden">
             <h2>Neuen Lauf erfassen</h2>
             <div class="details-grid">
                 <div><label>Datum</label><input type="date" id="runDate"></div>
@@ -58,7 +63,7 @@
 
         <div id="analysisArea" class="hidden">
             <h2 id="displayTitle"></h2>
-            <p id="displayMeta" style="color: #666;"></p>
+            <p id="displayMeta"></p>
 
             <div class="video-wrapper">
                 <video id="mainVideo" controls ontimeupdate="updateTimelineMarkers()" onloadedmetadata="renderNotes()"></video>
@@ -66,11 +71,11 @@
                 <div id="timelineMarkers" class="timeline-markers"></div>
             </div>
 
-            <div class="card">
+            <div class="glass-card">
                 <h3>Notiz hinzufügen</h3>
-                <div style="display:flex; gap: 10px;">
+                <div style="display:flex; gap: 10px; align-items: center;">
                     <input type="text" id="noteText" placeholder="Was ist passiert? (Shortcut: N)">
-                    <select id="faultType" style="width: 150px;">
+                    <select id="faultType">
                         <option value="Info">Info</option>
                         <option value="Fehler">Allg. Fehler</option>
                         <option value="Stangenfehler">Stangenfehler</option>
@@ -82,7 +87,7 @@
                 </div>
             </div>
 
-            <div class="card">
+            <div class="glass-card">
                 <h3>Fehler / Notizen</h3>
                 <div id="notesList"></div>
             </div>
@@ -90,10 +95,10 @@
             <div style="margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px;">
                  <button class="secondary" onclick="toggleDrawing()">Zeichnen an/aus</button>
                  <button class="secondary" onclick="clearDrawing()">Zeichnung löschen</button>
-                 <button class="secondary" onclick="updateVideo()">Video ändern</button> <!-- NEW BUTTON -->
+                 <button class="secondary" onclick="updateVideo()">Video ändern</button>
                  <button class="danger" onclick="deleteCurrentRun()">Diesen Lauf löschen</button>
             </div>
-            <input type="file" id="updateVideoInput" class="hidden" accept="video/*" onchange="handleVideoUpdate(event)"> <!-- NEW HIDDEN INPUT -->
+            <input type="file" id="updateVideoInput" class="hidden" accept="video/*" onchange="handleVideoUpdate(event)">
         </div>
     </div>
 
