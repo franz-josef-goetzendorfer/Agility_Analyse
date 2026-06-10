@@ -23,7 +23,7 @@ window.onload = () => {
     renderHistory();
     setupKeyboardShortcuts();
     setupDrawingCanvas();
-    setupScrubber(); // NEW: Initialize the scrubber
+    setupScrubber();
 };
 
 // --- UI Management ---
@@ -202,7 +202,6 @@ function handleVideoUpdate(event) {
     event.target.value = '';
 }
 
-// UPDATED: Combined update function
 function updateOnTimeUpdate() {
     updateTimelineMarkers();
     updateScrubHandle();
@@ -223,7 +222,7 @@ function updateTimelineMarkers() {
     }).join('');
 }
 
-// --- NEW: Scrubber Logic ---
+// --- Scrubber Logic ---
 let isScrubbing = false;
 
 function setupScrubber() {
@@ -233,7 +232,7 @@ function setupScrubber() {
 
     const startScrub = (e) => {
         isScrubbing = true;
-        video.pause(); // Pause video for precise control
+        video.pause();
         document.body.style.cursor = 'grabbing';
         updateVideoTime(e);
     };
@@ -247,7 +246,7 @@ function setupScrubber() {
 
     const scrub = (e) => {
         if (isScrubbing) {
-            e.preventDefault(); // Prevent text selection while dragging
+            e.preventDefault();
             updateVideoTime(e);
         }
     };
@@ -278,17 +277,21 @@ function updateScrubHandle() {
     }
 }
 
-
 // --- Keyboard Shortcuts ---
 function setupKeyboardShortcuts() {
     document.addEventListener('keydown', (e) => {
         const activeEl = document.activeElement;
         if (['INPUT', 'SELECT', 'TEXTAREA'].includes(activeEl.tagName)) return;
 
+        // Ensure the video is paused for frame-by-frame seeking
+        const video = document.getElementById('mainVideo');
+        if (e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
+            video.pause();
+        }
+
         switch (e.code) {
             case 'Space':
                 e.preventDefault();
-                const video = document.getElementById('mainVideo');
                 video.paused ? video.play() : video.pause();
                 break;
             case 'KeyN':
@@ -297,11 +300,13 @@ function setupKeyboardShortcuts() {
                 break;
             case 'ArrowLeft':
                 e.preventDefault();
-                document.getElementById('mainVideo').currentTime -= 1; // Changed to 1 second
+                // Jump back by 1/30th of a second (one frame at 30fps)
+                video.currentTime -= (1/30);
                 break;
             case 'ArrowRight':
                 e.preventDefault();
-                document.getElementById('mainVideo').currentTime += 1; // Changed to 1 second
+                // Jump forward by 1/30th of a second (one frame at 30fps)
+                video.currentTime += (1/30);
                 break;
         }
     });
