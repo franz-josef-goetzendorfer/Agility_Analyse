@@ -23,6 +23,7 @@ window.onload = () => {
     renderHistory();
     setupKeyboardShortcuts();
     setupDrawingCanvas();
+    setupScrubber(); // NEW: Initialize the scrubber
 };
 
 // --- UI Management ---
@@ -85,7 +86,7 @@ function loadRun(id) {
     video.src = URL.createObjectURL(file);
     
     renderNotes();
-    renderHistory(); // To highlight the active item
+    renderHistory();
 }
 
 function requestVideoForRun(id) {
@@ -185,14 +186,11 @@ function jumpTo(time) {
 }
 
 // --- Video Features ---
-
-// NEW: Function to trigger the hidden file input
 function updateVideo() {
     if (!currentRunId) return alert("Bitte zuerst einen Lauf laden.");
     document.getElementById('updateVideoInput').click();
 }
 
-// NEW: Function to handle the file selection and update the video
 function handleVideoUpdate(event) {
     const file = event.target.files[0];
     if (file && currentRunId) {
@@ -201,7 +199,13 @@ function handleVideoUpdate(event) {
         video.src = URL.createObjectURL(file);
         video.play();
     }
-    event.target.value = ''; // Reset input to allow re-selecting the same file
+    event.target.value = '';
+}
+
+// UPDATED: Combined update function
+function updateOnTimeUpdate() {
+    updateTimelineMarkers();
+    updateScrubHandle();
 }
 
 function updateTimelineMarkers() {
@@ -218,6 +222,62 @@ function updateTimelineMarkers() {
         return `<div class="note-marker" style="left: ${percent}%; background-color: ${faultColors[n.type] || '#777'}"></div>`;
     }).join('');
 }
+
+// --- NEW: Scrubber Logic ---
+let isScrubbing = false;
+
+function setupScrubber() {
+    const scrubContainer = document.getElementById('scrub-container');
+    const scrubHandle = document.getElementById('scrub-handle');
+    const video = document.getElementById('mainVideo');
+
+    const startScrub = (e) => {
+        isScrubbing = true;
+        video.pause(); // Pause video for precise control
+        document.body.style.cursor = 'grabbing';
+        updateVideoTime(e);
+    };
+
+    const stopScrub = () => {
+        if (isScrubbing) {
+            isScrubbing = false;
+            document.body.style.cursor = 'default';
+        }
+    };
+
+    const scrub = (e) => {
+        if (isScrubbing) {
+            e.preventDefault(); // Prevent text selection while dragging
+            updateVideoTime(e);
+        }
+    };
+
+    const updateVideoTime = (e) => {
+        const rect = scrubContainer.getBoundingClientRect();
+        const position = e.clientX - rect.left;
+        const percentage = Math.max(0, Math.min(1, position / rect.width));
+        video.currentTime = percentage * video.duration;
+    };
+
+    scrubHandle.addEventListener('mousedown', startScrub);
+    document.addEventListener('mouseup', stopScrub);
+    document.addEventListener('mousemove', scrub);
+    scrubContainer.addEventListener('click', (e) => {
+        if (e.target !== scrubHandle) {
+             updateVideoTime(e);
+        }
+    });
+}
+
+function updateScrubHandle() {
+    const video = document.getElementById('mainVideo');
+    const scrubHandle = document.getElementById('scrub-handle');
+    if (video.duration) {
+        const percentage = (video.currentTime / video.duration) * 100;
+        scrubHandle.style.left = `${percentage}%`;
+    }
+}
+
 
 // --- Keyboard Shortcuts ---
 function setupKeyboardShortcuts() {
@@ -237,11 +297,11 @@ function setupKeyboardShortcuts() {
                 break;
             case 'ArrowLeft':
                 e.preventDefault();
-                document.getElementById('mainVideo').currentTime -= 5;
+                document.getElementById('mainVideo').currentTime -= 1; // Changed to 1 second
                 break;
             case 'ArrowRight':
                 e.preventDefault();
-                document.getElementById('mainVideo').currentTime += 5;
+                document.getElementById('mainVideo').currentTime += 1; // Changed to 1 second
                 break;
         }
     });
@@ -352,5 +412,5 @@ function importData(event) {
         }
     };
     reader.readAsText(file);
-    event.target.value = ''; // Reset file input
+    event.target.value = '';
 }
