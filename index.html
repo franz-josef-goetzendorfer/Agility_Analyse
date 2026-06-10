@@ -66,9 +66,15 @@
             <p id="displayMeta"></p>
 
             <div class="video-wrapper">
-                <video id="mainVideo" controls ontimeupdate="updateTimelineMarkers()" onloadedmetadata="renderNotes()"></video>
+                <video id="mainVideo" controls ontimeupdate="updateOnTimeUpdate()" onloadedmetadata="renderNotes()"></video>
                 <canvas id="drawingCanvas" class="hidden"></canvas>
                 <div id="timelineMarkers" class="timeline-markers"></div>
+            </div>
+
+            <!-- NEW SCRUBBER -->
+            <div id="scrub-container" class="scrub-container">
+                <div id="scrub-track"></div>
+                <div id="scrub-handle"></div>
             </div>
 
             <div class="glass-card">
