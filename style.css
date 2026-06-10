@@ -118,11 +118,6 @@ label {
     background: rgba(15, 23, 42, 0.3);
 }
 
-.sidebar-header {
-    text-align: center;
-    padding: 10px 0;
-}
-
 .main-content {
     flex: 1;
     padding: 20px;
@@ -237,6 +232,42 @@ input:focus, select:focus {
     border: 1px solid var(--border-glass);
 }
 video { width: 100%; display: block; }
+
+/* --- NEW: Scrubber Styles --- */
+.scrub-container {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    margin: 15px auto 0;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+#scrub-track {
+    width: 100%;
+    height: 6px;
+    background-color: var(--ui-slate);
+    border-radius: 3px;
+    position: relative;
+}
+#scrub-handle {
+    position: absolute;
+    width: 24px;
+    height: 40px;
+    background-color: var(--accent-cyan);
+    border-radius: 8px;
+    border: 2px solid var(--bg-obsidian);
+    cursor: grab;
+    transform: translateX(-12px); /* Center the handle */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#scrub-handle:active {
+    cursor: grabbing;
+    background-color: var(--accent-gold);
+}
 
 /* Notes List */
 #notesList { max-height: 400px; overflow-y: auto; padding-right: 10px;}
